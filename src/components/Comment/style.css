@@ -1,0 +1,12 @@
+#body {
+    width: 560px;
+    padding: 20px 20px;
+    margin-top: 20px;
+    margin-left: 100px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-radius: 19px;
+    background: #eee;
+}
+

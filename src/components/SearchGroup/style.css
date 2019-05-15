@@ -1,0 +1,15 @@
+#input-style {
+    width: 260px;
+    height: 36px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-radius: 19px;
+    background: #eee;
+    font-size: 13px;
+}
+
+#btn{
+    margin-left: 15px;
+}
