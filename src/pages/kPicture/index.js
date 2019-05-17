@@ -8,19 +8,35 @@ class KPicture extends Component {
         super(props);
         this.state = store.getState();
         this.handleStoreChange = this.handleStoreChange.bind(this);
-        this.state = {
-            dates: [
-                '2017-10-24', '2017-10-25', '2017-10-26', '2017-10-27'
-            ],
-            prices: [
-                [20, 30, 10, 35],
-                [40, 35, 30, 55],
-                [33, 38, 33, 40],
-                [40, 40, 32, 42]
-            ],
-            predict: [20, 30, 10, 35]
+        let dataList = this.fetchData();
+        this.state.candlestick = {
+            dates: dataList[0],
+            prices: dataList[1],
+            predict: dataList[2]
         };
         store.subscribe(this.handleStoreChange);
+    }
+
+    handleStoreChange(){
+        this.setState(store.getState());
+    }
+
+    fetchData() {
+        let rawData = [
+            ['2017-10-24', 20, 30, 10, 35],
+            ['2017-10-25', 40, 35, 30, 55],
+            ['2017-10-26', 33, 38, 33, 40],
+            ['2017-10-27', 40, 40, 32, 42]
+        ];
+        let predict = [20, 30, 10, 35];
+
+        let dates = [];
+        let prices = [];
+        for (let item of rawData){
+            dates.push(item[0]);
+            prices.push(item.slice(1, 5));
+        }
+        return [dates, prices, predict];
     }
 
     componentDidMount() {
@@ -29,10 +45,6 @@ class KPicture extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.initCharts();
-    }
-
-    handleStoreChange(){
-        this.setState(store.getState());
     }
 
     initCharts() {
@@ -46,13 +58,13 @@ class KPicture extends Component {
                 data:['股票价格']
             },
             xAxis: {
-                data: this.state.dates
+                data: this.state.candlestick.dates
             },
             yAxis: {},
             series: [{
                 name: '股票价格',
                 type: 'candlestick',
-                data: this.state.prices
+                data: this.state.candlestick.prices
             }]
         };
         kChart.setOption(option);
@@ -61,16 +73,16 @@ class KPicture extends Component {
     render() {
         return (
             <div>
-                <div ref="candlestick_chart" style={{width:"100%", height:"400px"}}>
+                <div ref="candlestick_chart" style={{width:"90%", height:"500%"}}>
                 </div>
 
                 <h3>明日股价预测</h3>
                 <div>
                     <ol>
-                        <li>开始价格：{this.state.predict[0]}</li>
-                        <li>结束价格：{this.state.predict[1]}</li>
-                        <li>最高价格：{this.state.predict[2]}</li>
-                        <li>最低价格：{this.state.predict[3]}</li>
+                        <li>开始价格：{this.state.candlestick.predict[0]}</li>
+                        <li>结束价格：{this.state.candlestick.predict[1]}</li>
+                        <li>最高价格：{this.state.candlestick.predict[2]}</li>
+                        <li>最低价格：{this.state.candlestick.predict[3]}</li>
                     </ol>
                 </div>
             </div>

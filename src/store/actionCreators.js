@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA } from './actionTypes';
+import {UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_K_DATA} from './actionTypes';
 
 const updateTableAction = (value) => ({
     type: UPDATE_TABLE_DATA,
@@ -8,6 +8,11 @@ const updateTableAction = (value) => ({
 
 const updateCommentsAction = (value) => ({
     type: UPDATE_COMMENTS_DATA,
+    value
+});
+
+const updateKDataAction = (value) => ({
+    type: UPDATE_K_DATA,
     value
 });
 
