@@ -19,6 +19,7 @@ class DataTable extends Component{
                 loading: false,
             },
             pageSize: 5,
+            exchange:'sh_a'
         };
         store.subscribe(this.handleStoreChange);
     }
@@ -160,7 +161,9 @@ class DataTable extends Component{
     getNextPage(){
         let currentPage = this.state.dataSource.currentPage;
         let exchange = this.state.exchange;
+        console.log('get next');
         console.log(exchange);
+        console.log(currentPage);
         this.setState({
             loading: true,
         });

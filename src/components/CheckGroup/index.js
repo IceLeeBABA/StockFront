@@ -41,6 +41,8 @@ class CheckGroup extends Component {
 
     handleBtnClick(){
         let selected = this.state.exchange;
+        console.log('get exchange');
+        console.log(selected);
         const action1 = getTableData(selected,1,5);
         store.dispatch(action1);
         const action2 = updateExchangeAction(selected);
