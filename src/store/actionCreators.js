@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_K_DATA} from './actionTypes';
+import {UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_K_DATA, UPDATE_EXCHANGE_DATA} from './actionTypes';
 
 const updateTableAction = (value) => ({
     type: UPDATE_TABLE_DATA,
@@ -16,13 +16,18 @@ const updateKDataAction = (value) => ({
     value
 });
 
+export const updateExchangeAction = (value) => ({
+    type: UPDATE_EXCHANGE_DATA,
+    value
+});
+
 export const getTableData = (exchange, page, number) => {
     return (dispatch) => {
-        axios.get('/api/getTableData.json', {
+        axios.get('http://123.207.12.156:5000/list', {
             params: {
-                exchange: 'sh_a',
-                page: 5,
-                number: 8
+                exchange: exchange,
+                page: page,
+                number: number
             },
         },)
             .then((res) => {
