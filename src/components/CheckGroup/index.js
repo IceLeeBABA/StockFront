@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Select, Button } from 'antd';
-import { getTableData } from "../../store/actionCreators";
+import { getTableData, updateExchangeAction } from "../../store/actionCreators";
 import store from "../../store";
 
 const Option = Select.Option;
@@ -14,6 +14,10 @@ class CheckGroup extends Component {
             exchange: "sh_a"
         }
     }
+    componentWillMount() {
+        this.handleBtnClick();
+    }
+
     render() {
         return (
             <div id='check-group-style'>
@@ -39,6 +43,8 @@ class CheckGroup extends Component {
         let selected = this.state.exchange;
         const action1 = getTableData(selected,1,5);
         store.dispatch(action1);
+        const action2 = updateExchangeAction(selected);
+        store.dispatch(action2);
     }
 
 }

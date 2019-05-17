@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { Table, Statistic, Button } from 'antd';
 import store from "../../store";
-import {getCommentsData, getTableData} from "../../store/actionCreators";
+import {getTableData} from "../../store/actionCreators";
 
 class DataTable extends Component{
 
@@ -164,11 +164,21 @@ class DataTable extends Component{
         this.setState({
             loading: true,
         });
-        const action = getTableData(exchange, currentPage, 5);
+        const action = getTableData(exchange, currentPage+1, 5);
         store.dispatch(action);
     }
 
     getPrePage(){
+        let currentPage = this.state.dataSource.currentPage;
+        if (currentPage > 1){
+            let exchange = this.state.exchange;
+            console.log(exchange);
+            this.setState({
+                loading: true,
+            });
+            const action = getTableData(exchange, currentPage-1, 5);
+            store.dispatch(action);
+        }
 
     }
 }

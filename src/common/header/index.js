@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Input} from "antd";
-import {getCommentsData, getTableData} from "../../store/actionCreators";
+import {getCommentsData} from "../../store/actionCreators";
 import store from "../../store";
 require('./style.css');
 
