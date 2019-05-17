@@ -28,7 +28,7 @@ export const getTableData = (exchange, page, number) => {
                     tableData: tableData.data,
                     currentPage : page,
                     loading: loading,
-                }
+                };
                 const action = updateTableAction(dataSource);
                 console.log(tableData.data);
                 dispatch(action);

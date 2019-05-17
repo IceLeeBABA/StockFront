@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {Button, Input} from "antd";
-import { getCommentsData } from "../../store/actionCreators";
+import {getCommentsData, getTableData} from "../../store/actionCreators";
 import store from "../../store";
 require('./style.css');
 
 class Header extends Component{
     constructor(props){
         super(props);
+        this.state = store.getState();
         this.handleBtnClick = this.handleBtnClick.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.state = {
