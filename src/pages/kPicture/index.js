@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {getKData} from "../../store/actionCreators";
 import store from "../../store";
 import echarts from 'echarts';
 
@@ -40,10 +41,14 @@ class KPicture extends Component {
     }
 
     componentDidMount() {
+        const action = getKData();
+        store.dispatch(action);
         this.initCharts();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        const action = getKData();
+        store.dispatch(action);
         this.initCharts();
     }
 

@@ -8,7 +8,11 @@ const defaultState = {
         loading: false,
     },
     exchange: 'sh_a',
-    candlestick: [[], [], []],
+    candlestick: {
+        dates: [],
+        prices: [],
+        predict: []
+    },
 };
 
 export default (state = defaultState, action) => {

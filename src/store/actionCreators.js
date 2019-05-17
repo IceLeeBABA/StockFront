@@ -59,5 +59,22 @@ export const getCommentsData = (code) => {
                 dispatch(action);
             })
     }
-}
+};
+
+export const getKData = (code, begin, end) => {
+    return (dispatch) => {
+        axios.get('http://123.207.12.156:5000/history', {params: {code: code, begin: begin, end: end}})
+            .then((res) => {
+                let historyData = res.data;
+                console.log(historyData.data);
+                const action = updateKDataAction(historyData.data);
+                dispatch(action);
+            }).then(() => {
+                axios.get('http://123.207.12.156:5000/prediction', {params: {code: code}})
+                    .then((res) => {
+                        let predictionData = res.data
+                    })
+            })
+    }
+};
 
