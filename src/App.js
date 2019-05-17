@@ -32,7 +32,7 @@ class App extends Component{
                         <Menu.Item key="1">
                             <Link to="/">
                                 <Icon type="database" />
-                                <span>信息对比</span>
+                                <span>股票信息</span>
                             </Link>
                         </Menu.Item>
                         <Menu.Item key="2">

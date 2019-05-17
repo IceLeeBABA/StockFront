@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Statistic } from 'antd';
+import { Table, Statistic, Button } from 'antd';
 import store from "../../store";
-require('./style.css');
 
 class DataTable extends Component{
 
@@ -10,23 +9,15 @@ class DataTable extends Component{
         super(props);
         this.state = store.getState();
         this.handleStoreChange = this.handleStoreChange.bind(this);
+        this.getNextPage = this.getNextPage.bind(this);
+        this.getPrePage = this.getPrePage.bind(this);
         this.state = {
-            dataSource: [{
-                key: '1',
-                code: 'sh603077',
-                name: '和邦生物',
-                latest_price: '1.97',
-                rise_fall: '+1.08',
-                quote_change: '+10.056',
-                buy: '1.97',
-                sell: '0.00',
-                yesterday_get: '1.79',
-                today_open: '1.78',
-                highest: '1.97',
-                lowest: '1.77',
-                volume: '1752020',
-                turnover: '33671.09'
-            }],
+            dataSource: {
+                tableData: [],
+                currentPage : 1,
+                loading: false,
+            },
+            pageSize: 5,
         };
         store.subscribe(this.handleStoreChange);
     }
@@ -34,70 +25,143 @@ class DataTable extends Component{
     render() {
         const columns = [{
             title: '代码',
+            width: 100,
             dataIndex: 'code',
             key: 'code',
+            fixed: 'left',
         },{
             title: '名称',
+            width: 100,
             dataIndex: 'name',
             key: 'name',
+            fixed: 'left',
         },{
             title: '最新价',
-            dataIndex: 'latest_price',
-            key: 'latest_price',
+            width: 150,
+            dataIndex: 'current_price',
+            key: 'current_price',
         }, {
             title: '涨跌额',
-            dataIndex: 'rise_fall',
-            key: 'rise_fall',
+            width: 100,
+            dataIndex: 'change_number',
+            key: 'change_number',
         }, {
             title: '涨跌幅',
-            dataIndex: 'quote_change',
-            key: 'quote_change',
-            render: text => <Statistic value={text} valueStyle={{fontSize:'18px'}} suffix="%"/>
+            width: 150,
+            dataIndex: 'change_ratio',
+            key: 'change_ratio',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} suffix="%"/>
         }, {
             title: '买入',
+            width: 100,
             dataIndex: 'buy',
             key: 'buy',
         }, {
             title: '卖出',
+            width: 100,
             dataIndex: 'sell',
             key: 'sell',
         }, {
-            title: '昨收',
-            dataIndex: 'yesterday_get',
-            key: 'yesterday_get',
-        }, {
             title: '今开',
-            dataIndex: 'today_open',
-            key: 'today_open',
+            width: 100,
+            dataIndex: 'begin_price',
+            key: 'begin_price',
+        },{
+            title: '昨收',
+            width: 100,
+            dataIndex: 'last_end_price',
+            key: 'last_end_price',
         }, {
             title: '最高',
-            dataIndex: 'highest',
-            key: 'highest',
+            width: 100,
+            dataIndex: 'highest_price',
+            key: 'highest_price',
         }, {
             title: '最低',
-            dataIndex: 'lowest',
-            key: 'lowest',
+            width: 100,
+            dataIndex: 'lowest_price',
+            key: 'lowest_price',
         }, {
             title: '成交量/手',
-            dataIndex: 'volume',
-            key: 'volume',
-            render: text => <Statistic value={text} valueStyle={{fontSize:'18px'}} />
+            width: 150,
+            dataIndex: 'trade_number',
+            key: 'trade_number',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} />
         }, {
             title: '成交额/万',
-            dataIndex: 'turnover',
-            key: 'turnover',
-            render: text => <Statistic value={text} valueStyle={{fontSize:'18px'}} />
+            width: 150,
+            dataIndex: 'trade_money',
+            key: 'trade_money',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} />
+        },{
+            title: '52周最低',
+            width: 100,
+            dataIndex: 'week_52_low',
+            key: 'week_52_low',
+        },{
+            title: '52周最高',
+            width: 100,
+            dataIndex: 'week_52_high',
+            key: 'week_52_high',
+        },{
+            title: '年初至今',
+            width: 100,
+            dataIndex: 'current_year_percent',
+            key: 'current_year_percent',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} suffix="%"/>
+        },{
+            title: '换手率',
+            width: 100,
+            dataIndex: 'turnover_rate',
+            key: 'turnover_rate',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} suffix="%"/>
+        },{
+            title: '市盈率',
+            width: 100,
+            dataIndex: 'pe_ttm',
+            key: 'pe_ttm',
+        },{
+            title: '股息率',
+            width: 100,
+            dataIndex: 'dividend_yield',
+            key: 'dividend_yield',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} suffix="%"/>
+        },{
+            title: '市值（元）',
+            width: 200,
+            dataIndex: 'market_capital',
+            key: 'market_capital',
+            render: text => <Statistic value={text} valueStyle={{fontSize:'14px'}} />
         }];
 
         return(
-            <div id='body-style' >
-                <Table dataSource={this.state.dataSource} columns={columns} />
+            <div>
+                <Table
+                    columns={columns}
+                    dataSource={this.state.dataSource.tableData}
+                    pagination={false}
+                    loading={this.state.dataSource.loading}
+                    bordered
+                    scroll={{ x: 2350}} />
+
+                    <Button onClick={this.getPrePage} style={{marginLeft: '80%',marginRight: '15px', marginTop: '5px'}}>上一页</Button>
+                <Button onClick={this.getNextPage} style={{marginRight:'20px', marginTop: '5px'}}>下一页</Button>
             </div>
+
+
         )
     }
 
     handleStoreChange(){
         this.setState(store.getState());
+    }
+
+    getNextPage(){
+
+    }
+
+    getPrePage(){
+
     }
 }
 
