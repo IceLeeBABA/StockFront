@@ -13,6 +13,7 @@ const defaultState = {
         prices: [],
         predict: []
     },
+    inputValue: ''
 };
 
 export default (state = defaultState, action) => {

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+import echarts from 'echarts';
+import { DatePicker } from 'antd';
+import moment from 'moment';
 import {getKData} from "../../store/actionCreators";
 import store from "../../store";
-import echarts from 'echarts';
+
+
+const { RangePicker } = DatePicker;
 
 
 class KPicture extends Component {
@@ -9,12 +14,6 @@ class KPicture extends Component {
         super(props);
         this.state = store.getState();
         this.handleStoreChange = this.handleStoreChange.bind(this);
-        let dataList = this.fetchData();
-        this.state.candlestick = {
-            dates: dataList[0],
-            prices: dataList[1],
-            predict: dataList[2]
-        };
         store.subscribe(this.handleStoreChange);
     }
 
@@ -22,37 +21,18 @@ class KPicture extends Component {
         this.setState(store.getState());
     }
 
-    fetchData() {
-        let rawData = [
-            ['2017-10-24', 20, 30, 10, 35],
-            ['2017-10-25', 40, 35, 30, 55],
-            ['2017-10-26', 33, 38, 33, 40],
-            ['2017-10-27', 40, 40, 32, 42]
-        ];
-        let predict = [20, 30, 10, 35];
-
-        let dates = [];
-        let prices = [];
-        for (let item of rawData){
-            dates.push(item[0]);
-            prices.push(item.slice(1, 5));
+    onChange(date, dateString) {
+        let code;
+        if (this.state === undefined || this.state.inputValue === undefined){
+            code = '000001';
+        } else {
+            code = this.state.inputValue;
         }
-        return [dates, prices, predict];
-    }
 
-    componentDidMount() {
-        const action = getKData();
+        const action = getKData(code, dateString[0], dateString[1]);
         store.dispatch(action);
-        this.initCharts();
-    }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const action = getKData();
-        store.dispatch(action);
-        this.initCharts();
-    }
-
-    initCharts() {
+        //initialize chart
         const kChart = echarts.init(this.refs.candlestick_chart);
         let option = {
             title: {
@@ -75,10 +55,31 @@ class KPicture extends Component {
         kChart.setOption(option);
     }
 
+    componentDidMount() {
+        let picker = this.refs.range_picker;
+        let range;
+        if (picker.props.value === undefined){
+            range = picker.props.defaultValue;
+        } else {
+            range = picker.props.value;
+        }
+
+        this.onChange('', [range[0].format("YYYY-MM-DD"), range[1].format("YYYY-MM-DD")]);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.componentDidMount();
+    }
+
     render() {
         return (
             <div>
-                <div ref="candlestick_chart" style={{width:"90%", height:"500%"}}>
+                <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
+                <RangePicker ref="range_picker" onChange={this.onChange} defaultValue={[moment().subtract(1, 'years'), moment()]}>
+                </RangePicker>
+                <br/><br/>
+
+                <div ref="candlestick_chart" style={{width:"90%", height:"360%"}}>
                 </div>
 
                 <h3>明日股价预测</h3>
@@ -94,5 +95,6 @@ class KPicture extends Component {
         );
     }
 }
+
 
 export default KPicture;
