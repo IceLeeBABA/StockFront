@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_K_DATA, UPDATE_EXCHANGE_DATA} from './actionTypes';
+import {array} from "prop-types";
 
 
 const BACKEND_ADDR = 'http://123.207.12.156:5000';
@@ -38,12 +39,13 @@ export const getTableData = (exchange, page, number) => {
                 const currentPage = page;
                 const loading = false;
                 const dataSource = {
-                    tableData: tableData.data,
+                    tableData: tableData,
                     currentPage : page,
                     loading: loading,
                 };
-                const action = updateTableAction(dataSource);
+                console.log("get tabledata");
                 console.log(tableData.data);
+                const action = updateTableAction(dataSource);
                 dispatch(action);
             })
             .catch((err) => {
@@ -56,9 +58,9 @@ export const getCommentsData = (code) => {
     return (dispatch) => {
         axios.get('http://123.207.12.156:5000/comment', {params: {code: code}})
             .then((res) => {
-                let commentsData = res.data;
-                console.log(commentsData.data);
-                const action = updateCommentsAction(commentsData.data);
+                const commentsData = res.data;
+                console.log('get comments' + commentsData);
+                const action = updateCommentsAction(commentsData);
                 dispatch(action);
             })
     }
