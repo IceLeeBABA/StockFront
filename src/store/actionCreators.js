@@ -67,10 +67,6 @@ export const getCommentsData = (code) => {
 };
 
 export const getKData = (code, begin, end) => {
-    if (code === undefined){
-        code = '000001'
-    }
-
     return (dispatch) => {
         axios.all([
             axios.get(BACKEND_ADDR + '/history', {params: {code: code, begin: begin, end: end}}),

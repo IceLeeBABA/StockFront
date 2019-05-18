@@ -8,8 +8,12 @@ import store from "../../store";
 
 const { RangePicker } = DatePicker;
 
+let dirty = true;
+
 
 class KPicture extends Component {
+    range = [moment().subtract(6, 'months'), moment()];
+
     constructor(props) {
         super(props);
         this.state = store.getState();
@@ -22,8 +26,10 @@ class KPicture extends Component {
     }
 
     onChange(date, dateString) {
+        dirty = true;
+
         let code;
-        if (this.state === undefined || this.state.inputValue === undefined){
+        if (this.state === undefined || this.state.inputValue === undefined || this.state.inputValue === ''){
             code = '000001';
         } else {
             code = this.state.inputValue;
@@ -32,7 +38,28 @@ class KPicture extends Component {
         const action = getKData(code, dateString[0], dateString[1]);
         store.dispatch(action);
 
-        //initialize chart
+        try {
+            this.initChart();
+            this.range[0] = moment(dateString[0]);
+            this.range[1] = moment(dateString[1]);
+
+            dirty = false;
+        } catch (e) {}
+    }
+
+    componentDidMount() {
+        //just to visualize the empty chart
+        this.onChange('', [this.range[0].format("YYYY-MM-DD"), this.range[1].format("YYYY-MM-DD")]);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!dirty){
+            return;
+        }
+        this.componentDidMount();
+    }
+
+    initChart(){
         const kChart = echarts.init(this.refs.candlestick_chart);
         let option = {
             title: {
@@ -55,27 +82,11 @@ class KPicture extends Component {
         kChart.setOption(option);
     }
 
-    componentDidMount() {
-        let picker = this.refs.range_picker;
-        let range;
-        if (picker.props.value === undefined){
-            range = picker.props.defaultValue;
-        } else {
-            range = picker.props.value;
-        }
-
-        this.onChange('', [range[0].format("YYYY-MM-DD"), range[1].format("YYYY-MM-DD")]);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.componentDidMount();
-    }
-
     render() {
         return (
             <div>
                 <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
-                <RangePicker ref="range_picker" onChange={this.onChange} defaultValue={[moment().subtract(1, 'years'), moment()]}>
+                <RangePicker ref="range_picker" onChange={this.onChange}>
                 </RangePicker>
                 <br/><br/>
 
