@@ -1,9 +1,13 @@
 import axios from 'axios';
-import {UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_K_DATA, UPDATE_EXCHANGE_DATA} from './actionTypes';
+import {
+    UPDATE_TABLE_DATA,
+    UPDATE_COMMENTS_DATA,
+    UPDATE_K_DATA,
+    UPDATE_EXCHANGE_DATA,
+    UPDATE_K_CODE
+} from './actionTypes';
 import {array} from "prop-types";
 
-
-const BACKEND_ADDR = 'http://123.207.12.156:5000';
 
 const updateTableAction = (value) => ({
     type: UPDATE_TABLE_DATA,
@@ -25,9 +29,17 @@ export const updateExchangeAction = (value) => ({
     value
 });
 
+export const updateKCodeAction = (value) => ({
+    type: UPDATE_K_CODE,
+    value
+});
+
+
+const BACKEND_ADDR = 'http://localhost:5000';
+
 export const getTableData = (exchange, page, number) => {
     return (dispatch) => {
-        axios.get('http://123.207.12.156:5000/list', {
+        axios.get(BACKEND_ADDR + '/list', {
             params: {
                 exchange: exchange,
                 page: page,
@@ -43,8 +55,8 @@ export const getTableData = (exchange, page, number) => {
                     currentPage : page,
                     loading: loading,
                 };
-                console.log("get tabledata");
-                console.log(tableData.data);
+                //console.log("get tabledata");
+                //console.log(tableData.data);
                 const action = updateTableAction(dataSource);
                 dispatch(action);
             })
@@ -56,10 +68,10 @@ export const getTableData = (exchange, page, number) => {
 
 export const getCommentsData = (code) => {
     return (dispatch) => {
-        axios.get('http://123.207.12.156:5000/comment', {params: {code: code}})
+        axios.get(BACKEND_ADDR + '/comment', {params: {code: code}})
             .then((res) => {
                 const commentsData = res.data;
-                console.log('get comments' + commentsData);
+                //console.log('get comments' + commentsData);
                 const action = updateCommentsAction(commentsData);
                 dispatch(action);
             })
@@ -91,6 +103,13 @@ export const getKData = (code, begin, end) => {
             });
             dispatch(action)
         }));
+    }
+};
+
+export const getKCode = (code) => {
+    return (dispatch) => {
+        const action = updateKCodeAction(code);
+        dispatch(action);
     }
 };
 

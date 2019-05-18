@@ -1,4 +1,10 @@
-import { UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_EXCHANGE_DATA, UPDATE_K_DATA } from './actionTypes';
+import {
+    UPDATE_TABLE_DATA,
+    UPDATE_COMMENTS_DATA,
+    UPDATE_EXCHANGE_DATA,
+    UPDATE_K_DATA,
+    UPDATE_K_CODE
+} from './actionTypes';
 
 const defaultState = {
     comments: [],
@@ -38,6 +44,12 @@ export default (state = defaultState, action) => {
     if (action.type === UPDATE_K_DATA){
         const newState = JSON.parse(JSON.stringify(state));
         newState.candlestick = action.value;
+        return newState;
+    }
+
+    if (action.type === UPDATE_K_CODE){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.inputValue = action.value;
         return newState;
     }
 
