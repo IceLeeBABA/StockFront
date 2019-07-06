@@ -4,10 +4,11 @@ import {
     UPDATE_COMMENTS_DATA,
     UPDATE_K_DATA,
     UPDATE_EXCHANGE_DATA,
-    UPDATE_K_CODE
+    UPDATE_SCREEN_TABLE_DATA
 } from './actionTypes';
-import {array} from "prop-types";
 
+
+const BACKEND_ADDR = 'http://123.207.12.156:5000';
 
 const updateTableAction = (value) => ({
     type: UPDATE_TABLE_DATA,
@@ -24,22 +25,19 @@ const updateKDataAction = (value) => ({
     value
 });
 
+const updateScreenTableAction = (value) => ({
+    type: UPDATE_SCREEN_TABLE_DATA,
+    value
+});
+
 export const updateExchangeAction = (value) => ({
     type: UPDATE_EXCHANGE_DATA,
     value
 });
 
-export const updateKCodeAction = (value) => ({
-    type: UPDATE_K_CODE,
-    value
-});
-
-
-const BACKEND_ADDR = 'http://localhost:5000';
-
 export const getTableData = (exchange, page, number) => {
     return (dispatch) => {
-        axios.get(BACKEND_ADDR + '/list', {
+        axios.get('http://123.207.12.156:5000/list', {
             params: {
                 exchange: exchange,
                 page: page,
@@ -55,9 +53,36 @@ export const getTableData = (exchange, page, number) => {
                     currentPage : page,
                     loading: loading,
                 };
-                //console.log("get tabledata");
-                //console.log(tableData.data);
+                console.log("get tabledata");
+                console.log(tableData.data);
                 const action = updateTableAction(dataSource);
+                dispatch(action);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+};
+
+export const getScreenTableData = (min, max, exchange) => {
+    return (dispatch) => {
+        axios.get('http://123.207.12.156:5000/true_profits', {
+            params: {
+                min: min,
+                max: max,
+                exchange: exchange
+            },
+        },)
+            .then((res) => {
+                const tableData = res.data;
+                const S_dataSource = {
+                    min: min,
+                    max: max,
+                    exchange: exchange,
+                    tableData: tableData,
+                };
+                console.log("get screen tabledata");
+                const action = updateScreenTableAction(S_dataSource);
                 dispatch(action);
             })
             .catch((err) => {
@@ -68,10 +93,10 @@ export const getTableData = (exchange, page, number) => {
 
 export const getCommentsData = (code) => {
     return (dispatch) => {
-        axios.get(BACKEND_ADDR + '/comment', {params: {code: code}})
+        axios.get('http://123.207.12.156:5000/comment', {params: {code: code}})
             .then((res) => {
                 const commentsData = res.data;
-                //console.log('get comments' + commentsData);
+                console.log('get comments' + commentsData);
                 const action = updateCommentsAction(commentsData);
                 dispatch(action);
             })
@@ -79,6 +104,10 @@ export const getCommentsData = (code) => {
 };
 
 export const getKData = (code, begin, end) => {
+    if (code === undefined){
+        code = '000001'
+    }
+
     return (dispatch) => {
         axios.all([
             axios.get(BACKEND_ADDR + '/history', {params: {code: code, begin: begin, end: end}}),
@@ -103,13 +132,6 @@ export const getKData = (code, begin, end) => {
             });
             dispatch(action)
         }));
-    }
-};
-
-export const getKCode = (code) => {
-    return (dispatch) => {
-        const action = updateKCodeAction(code);
-        dispatch(action);
     }
 };
 

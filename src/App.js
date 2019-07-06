@@ -6,6 +6,7 @@ import HeaderNav from './common/header';
 import Comments from './pages/comments';
 import Detail from './pages/detail';
 import KPicture from './pages/kPicture';
+import Screening from './pages/yieldScreen'
 
 require ('./App.css');
 
@@ -47,6 +48,12 @@ class App extends Component{
                                 <span>k线图</span>
                             </Link>
                         </Menu.Item>
+                        <Menu.Item key="4">
+                            <Link to="/yieldScreen">
+                                <Icon type="database" />
+                                <span>收益率筛选</span>
+                            </Link>
+                        </Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout>
@@ -77,6 +84,7 @@ class App extends Component{
                                 <Route path='/' exact component={Detail}/>
                                 <Route path='/comments' exact component={Comments}/>
                                 <Route path='/kPicture' exact component={KPicture}/>
+                                <Route path='/yieldScreen' exact component={Screening}/>
                             </Switch>
                         </Route>
 
