@@ -111,7 +111,7 @@ export const getKData = (code, begin, end) => {
     return (dispatch) => {
         axios.all([
             axios.get(BACKEND_ADDR + '/history', {params: {code: code, begin: begin, end: end}}),
-            axios.get(BACKEND_ADDR + '/prediction', {params: {code: code}})
+            axios.get(BACKEND_ADDR + '/estimated_endprice', {params: {code: code}})
         ]).then(axios.spread((historyRes, predictionRes) => {
             let historyData = historyRes.data;
             let predictionData = predictionRes.data;
@@ -123,8 +123,10 @@ export const getKData = (code, begin, end) => {
                 prices.push([item.begin_price, item.end_price, item.highest_price, item.lowest_price]);
             }
 
-            let predict = [predictionData[0].begin_price, predictionData[0].end_price,
-                predictionData[0].highest_price, predictionData[0].lowest_price];
+            // let predict = [predictionData[0].begin_price, predictionData[0].end_price,
+            //     predictionData[0].highest_price, predictionData[0].lowest_price];
+            let predict = predictionData[0];
+
             const action = updateKDataAction({
                 dates: dates,
                 prices: prices,

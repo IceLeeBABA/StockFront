@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import echarts from 'echarts';
-import { DatePicker, Statistic, Row, Col } from 'antd';
+import { DatePicker} from 'antd';
 import moment from 'moment';
 import {getKData} from "../../store/actionCreators";
 import store from "../../store";
@@ -72,6 +72,16 @@ class KPicture extends Component {
     }
 
     render() {
+        let format = 'hh:mm:ss';
+        let prediction;
+        if (moment().isBefore(moment('09:30:00', format))){
+            prediction = '股市尚未开盘'
+        } else if (moment().isAfter(moment('15:30:00', format))){
+            prediction = '股市已闭市'
+        } else {
+            prediction = this.state.candlestick.predict
+        }
+
         return (
             <div>
                 <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
@@ -83,21 +93,8 @@ class KPicture extends Component {
                 </div>
 
                 <div>
-                    <h3>明日股价预测：</h3>
-                    <Row gutter={16}>
-                        <Col span={6}>
-                            <Statistic title="开始价格" value={this.state.candlestick.predict[0]} />
-                        </Col>
-                        <Col span={6}>
-                            <Statistic title="结束价格" value={this.state.candlestick.predict[1]}/>
-                        </Col>
-                        <Col span={6}>
-                            <Statistic title="最高价格" value={this.state.candlestick.predict[2]} />
-                        </Col>
-                        <Col span={6}>
-                            <Statistic title="最低价格" value={this.state.candlestick.predict[3]}/>
-                        </Col>
-                    </Row>
+                    <h3>今日收盘价预测：</h3>
+                    {prediction}
                 </div>
             </div>
         );
