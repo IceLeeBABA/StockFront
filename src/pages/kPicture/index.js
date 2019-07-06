@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import echarts from 'echarts';
-import { DatePicker } from 'antd';
+import { DatePicker, Statistic, Row, Col } from 'antd';
 import moment from 'moment';
 import {getKData} from "../../store/actionCreators";
 import store from "../../store";
@@ -8,12 +8,8 @@ import store from "../../store";
 
 const { RangePicker } = DatePicker;
 
-let dirty = true;
-
 
 class KPicture extends Component {
-    range = [moment().subtract(6, 'months'), moment()];
-
     constructor(props) {
         super(props);
         this.state = store.getState();
@@ -26,10 +22,8 @@ class KPicture extends Component {
     }
 
     onChange(date, dateString) {
-        dirty = true;
-
         let code;
-        if (this.state === undefined || this.state.inputValue === undefined || this.state.inputValue === ''){
+        if (this.state === undefined || this.state.inputValue === undefined){
             code = '000001';
         } else {
             code = this.state.inputValue;
@@ -38,28 +32,7 @@ class KPicture extends Component {
         const action = getKData(code, dateString[0], dateString[1]);
         store.dispatch(action);
 
-        try {
-            this.initChart();
-            this.range[0] = moment(dateString[0]);
-            this.range[1] = moment(dateString[1]);
-
-            dirty = false;
-        } catch (e) {}
-    }
-
-    componentDidMount() {
-        //just to visualize the empty chart
-        this.onChange('', [this.range[0].format("YYYY-MM-DD"), this.range[1].format("YYYY-MM-DD")]);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!dirty){
-            return;
-        }
-        this.componentDidMount();
-    }
-
-    initChart(){
+        //initialize chart
         const kChart = echarts.init(this.refs.candlestick_chart);
         let option = {
             title: {
@@ -82,25 +55,49 @@ class KPicture extends Component {
         kChart.setOption(option);
     }
 
+    componentDidMount() {
+        let picker = this.refs.range_picker;
+        let range;
+        if (picker.props.value === undefined){
+            range = picker.props.defaultValue;
+        } else {
+            range = picker.props.value;
+        }
+
+        this.onChange('', [range[0].format("YYYY-MM-DD"), range[1].format("YYYY-MM-DD")]);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.componentDidMount();
+    }
+
     render() {
         return (
             <div>
                 <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
-                <RangePicker ref="range_picker" onChange={this.onChange}>
+                <RangePicker ref="range_picker" onChange={this.onChange} defaultValue={[moment().subtract(1, 'years'), moment()]}>
                 </RangePicker>
                 <br/><br/>
 
-                <div ref="candlestick_chart" style={{width:"90%", height:"360%"}}>
+                <div ref="candlestick_chart" style={{width:"90%", height:"300%"}}>
                 </div>
 
-                <h3>明日股价预测</h3>
                 <div>
-                    <ol>
-                        <li>开始价格：{this.state.candlestick.predict[0]}</li>
-                        <li>结束价格：{this.state.candlestick.predict[1]}</li>
-                        <li>最高价格：{this.state.candlestick.predict[2]}</li>
-                        <li>最低价格：{this.state.candlestick.predict[3]}</li>
-                    </ol>
+                    <h3>明日股价预测：</h3>
+                    <Row gutter={16}>
+                        <Col span={6}>
+                            <Statistic title="开始价格" value={this.state.candlestick.predict[0]} />
+                        </Col>
+                        <Col span={6}>
+                            <Statistic title="结束价格" value={this.state.candlestick.predict[1]}/>
+                        </Col>
+                        <Col span={6}>
+                            <Statistic title="最高价格" value={this.state.candlestick.predict[2]} />
+                        </Col>
+                        <Col span={6}>
+                            <Statistic title="最低价格" value={this.state.candlestick.predict[3]}/>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );
