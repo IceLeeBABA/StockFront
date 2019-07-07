@@ -10,8 +10,7 @@ const defaultState = {
     },
     exchange: 'sh_a',
     S_dataSource:{
-        min: 0,
-        max: 0,
+        type: 0,
         exchange: 'sh_a',
         tableData: [],
     },

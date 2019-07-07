@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Input} from "antd";
-import {getCommentsData, getKCode} from "../../store/actionCreators";
+import {getCommentsData} from "../../store/actionCreators";
 import store from "../../store";
 require('./style.css');
 
@@ -29,8 +29,6 @@ class Header extends Component{
         let code = this.state.inputValue;
         const action1 = getCommentsData(code);
         store.dispatch(action1);
-        const action2 = getKCode(code);
-        store.dispatch(action2);
     }
 
     handleInputChange(e){

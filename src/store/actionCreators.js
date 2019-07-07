@@ -64,20 +64,18 @@ export const getTableData = (exchange, page, number) => {
     }
 };
 
-export const getScreenTableData = (min, max, exchange) => {
+export const getScreenTableData = (type, exchange) => {
     return (dispatch) => {
         axios.get('http://123.207.12.156:5000/true_profits', {
             params: {
-                min: min,
-                max: max,
+                class: type,
                 exchange: exchange
             },
         },)
             .then((res) => {
                 const tableData = res.data;
                 const S_dataSource = {
-                    min: min,
-                    max: max,
+                    type: type,
                     exchange: exchange,
                     tableData: tableData,
                 };
