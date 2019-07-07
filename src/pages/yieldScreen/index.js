@@ -27,11 +27,16 @@ class Screening extends Component {
     }
 
     render() {
-
+        const gridStyle = {
+            width: '100%',
+            textAlign: 'center',
+            marginBottom: '5px',
+            fontSize: '25px',
+        };
         return (
             <div>
                 <div>
-                    <Select defaultValue="&lt; 0" value={this.state.S_dataSource.type} style={{ width: 120, marginRight: '10px', marginBottom: '5px'}} onChange={this.handleTypeChange}>
+                    <Select defaultValue="&lt; 0" value={this.state.S_dataSource.type} style={{ width: 120, marginRight: '10px', marginBottom: '10px'}} onChange={this.handleTypeChange}>
                         <Option value="0" key="0"> &lt; 0</Option>
                         <Option value="1" key="1">0 ~ 5</Option>
                         <Option value="2" key="2">5 ~ 10</Option>
@@ -45,21 +50,25 @@ class Screening extends Component {
                     <Button type="primary" icon="search" id='btn' onClick={this.handleBtnClick}>查看</Button>
                 </div>
                 <div>
-                    <List
-                        grid={{
-                            gutter: 16,
-                            column: 6
-                        }}
-                        pagination={{
-                            pageSize: 18,
-                        }}
-                        dataSource={this.state.S_dataSource.tableData}
-                        renderItem={item => (
-                            <List.Item>
-                                <Card title="代码" style={{fontSize: '25px',color: '#696969'}}>{item}</Card>
-                            </List.Item>
-                        )}
-                    />
+                    <Card title="股票代码">
+                        <List
+                            grid={{
+                                gutter: 16,
+                                column: 6
+                            }}
+                            pagination={{
+                                pageSize: 18,
+                            }}
+                            dataSource={this.state.S_dataSource.tableData}
+                            renderItem={item => (
+                                <List.Item>
+                                    {/*<Card title="代码" style={{fontSize: '25px',color: '#696969'}}>{item}</Card>*/}
+                                    <Card.Grid style={gridStyle}>{item}</Card.Grid>
+                                </List.Item>
+                            )}
+                        />
+                    </Card>
+
                 </div>
             </div>
         )
