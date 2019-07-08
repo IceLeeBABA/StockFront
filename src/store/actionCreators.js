@@ -131,12 +131,13 @@ export const getKData = (code, begin, end) => {
             //     predictionData[0].highest_price, predictionData[0].lowest_price];
             let predict = predictionData[0];
 
-            const action = updateKDataAction({
+            const candlestick = {
                 dates: dates,
                 prices: prices,
                 predict: predict
-            });
-            dispatch(action)
+            };
+            const action = updateKDataAction(candlestick);
+            dispatch(action);
         }));
     }
 };

@@ -51,6 +51,7 @@ export default (state = defaultState, action) => {
     if (action.type === UPDATE_K_DATA){
         const newState = JSON.parse(JSON.stringify(state));
         newState.candlestick = action.value;
+        console.log("更新state")
         return newState;
     }
 

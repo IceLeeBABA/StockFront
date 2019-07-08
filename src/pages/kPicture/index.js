@@ -16,28 +16,28 @@ class KPicture extends Component {
         super(props);
         this.state = store.getState();
         this.handleStoreChange = this.handleStoreChange.bind(this);
+        this.doTheChange = this.doTheChange.bind(this);
         store.subscribe(this.handleStoreChange);
 
-        //TODO
-        this.doTheChange = this.doTheChange.bind(this);
     }
 
     handleStoreChange(){
         this.setState(store.getState());
+        this.initChart();
     }
 
     async doTheChange(dummy, dateString) {
         console.log("Do the change")
 
         let code;
+
         if (this.state === undefined || this.state.inputValue === undefined || this.state.inputValue === ''){
             code = '000001';
         } else {
             code = this.state.inputValue;
         }
-
         const action = getKData(code, dateString[0], dateString[1]);
-        await store.dispatch(action);
+        store.dispatch(action);
 
         try {
             this.initChart();
@@ -59,6 +59,8 @@ class KPicture extends Component {
 
     initChart(){
         const kChart = echarts.init(this.refs.candlestick_chart);
+        console.log(this.state.candlestick.dates);
+        console.log(this.state.candlestick.prices);
         let option = {
             title: {
                 text: '日K图',
