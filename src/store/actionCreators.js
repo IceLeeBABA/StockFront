@@ -3,6 +3,7 @@ import {
     UPDATE_TABLE_DATA,
     UPDATE_COMMENTS_DATA,
     UPDATE_K_DATA,
+    UPDATE_K_CODE,
     UPDATE_EXCHANGE_DATA,
     UPDATE_SCREEN_TABLE_DATA
 } from './actionTypes';
@@ -22,6 +23,11 @@ const updateCommentsAction = (value) => ({
 
 const updateKDataAction = (value) => ({
     type: UPDATE_K_DATA,
+    value
+});
+
+export const updateKCodeAction = (value) => ({
+    type: UPDATE_K_CODE,
     value
 });
 
@@ -109,7 +115,7 @@ export const getKData = (code, begin, end) => {
     return (dispatch) => {
         axios.all([
             axios.get(BACKEND_ADDR + '/history', {params: {code: code, begin: begin, end: end}}),
-            axios.get(BACKEND_ADDR + '/estimated_endprice', {params: {code: code}})
+            axios.get(BACKEND_ADDR + '/prediction', {params: {code: code}})
         ]).then(axios.spread((historyRes, predictionRes) => {
             let historyData = historyRes.data;
             let predictionData = predictionRes.data;
@@ -135,3 +141,9 @@ export const getKData = (code, begin, end) => {
     }
 };
 
+export const getKCode = (code) => {
+    return (dispatch) => {
+        const action = updateKCodeAction(code);
+        dispatch(action);
+    }
+};

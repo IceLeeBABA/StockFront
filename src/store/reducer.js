@@ -1,4 +1,11 @@
-import { UPDATE_TABLE_DATA, UPDATE_COMMENTS_DATA, UPDATE_EXCHANGE_DATA, UPDATE_K_DATA, UPDATE_SCREEN_TABLE_DATA } from './actionTypes';
+import {
+    UPDATE_TABLE_DATA,
+    UPDATE_COMMENTS_DATA,
+    UPDATE_EXCHANGE_DATA,
+    UPDATE_K_DATA,
+    UPDATE_K_CODE,
+    UPDATE_SCREEN_TABLE_DATA
+} from './actionTypes';
 
 const defaultState = {
     comments: [],
@@ -17,7 +24,7 @@ const defaultState = {
     candlestick: {
         dates: [],
         prices: [],
-        predict: []
+        predict: ''
     },
     inputValue: ''
 };
@@ -50,6 +57,12 @@ export default (state = defaultState, action) => {
     if (action.type === UPDATE_SCREEN_TABLE_DATA){
         const newState = JSON.parse(JSON.stringify(state));
         newState.S_dataSource = action.value;
+        return newState;
+    }
+
+    if (action.type === UPDATE_K_CODE){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.inputValue = action.value;
         return newState;
     }
 
