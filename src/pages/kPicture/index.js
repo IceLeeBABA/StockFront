@@ -8,8 +8,6 @@ import store from "../../store";
 
 const { RangePicker } = DatePicker;
 
-let dirty = true;
-
 
 class KPicture extends Component {
     range = [moment().subtract(6, 'months'), moment()]; //default value
@@ -19,14 +17,17 @@ class KPicture extends Component {
         this.state = store.getState();
         this.handleStoreChange = this.handleStoreChange.bind(this);
         store.subscribe(this.handleStoreChange);
+
+        //TODO
+        this.doTheChange = this.doTheChange.bind(this);
     }
 
     handleStoreChange(){
         this.setState(store.getState());
     }
 
-    onChange(date, dateString) {
-        dirty = true;
+    async doTheChange(dummy, dateString) {
+        console.log("Do the change")
 
         let code;
         if (this.state === undefined || this.state.inputValue === undefined || this.state.inputValue === ''){
@@ -36,28 +37,25 @@ class KPicture extends Component {
         }
 
         const action = getKData(code, dateString[0], dateString[1]);
-        store.dispatch(action);
+        await store.dispatch(action);
 
         try {
             this.initChart();
             this.range[0] = moment(dateString[0]);
             this.range[1] = moment(dateString[1]);
-
-            dirty = false;
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     componentDidMount() {
-        //just to visualize the empty chart
-        this.onChange('', [this.range[0].format("YYYY-MM-DD"), this.range[1].format("YYYY-MM-DD")]);
+        let _this = this;
+
+        window.requestAnimationFrame(function() {
+            _this.doTheChange('', [_this.range[0].format("YYYY-MM-DD"), _this.range[1].format("YYYY-MM-DD")]);
+        });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!dirty){
-            return;
-        }
-        this.componentDidMount();
-    }
 
     initChart(){
         const kChart = echarts.init(this.refs.candlestick_chart);
@@ -88,7 +86,7 @@ class KPicture extends Component {
         return (
             <div>
                 <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
-                <RangePicker ref="range_picker" onChange={this.onChange}>
+                <RangePicker ref="range_picker" onChange={this.doTheChange}>
                 </RangePicker>
                 <br/><br/>
 
