@@ -4,7 +4,7 @@ import {
     UPDATE_EXCHANGE_DATA,
     UPDATE_K_DATA,
     UPDATE_K_CODE,
-    UPDATE_SCREEN_TABLE_DATA
+    UPDATE_SCREEN_TABLE_DATA, UPDATE_PREDICT
 } from './actionTypes';
 
 const defaultState = {
@@ -24,8 +24,8 @@ const defaultState = {
     candlestick: {
         dates: [],
         prices: [],
-        predict: ''
     },
+    predict: '',
     inputValue: ''
 };
 
@@ -51,7 +51,6 @@ export default (state = defaultState, action) => {
     if (action.type === UPDATE_K_DATA){
         const newState = JSON.parse(JSON.stringify(state));
         newState.candlestick = action.value;
-        console.log("更新state")
         return newState;
     }
 
@@ -64,6 +63,12 @@ export default (state = defaultState, action) => {
     if (action.type === UPDATE_K_CODE){
         const newState = JSON.parse(JSON.stringify(state));
         newState.inputValue = action.value;
+        return newState;
+    }
+
+    if (action.type === UPDATE_PREDICT){
+        const newState = JSON.parse(JSON.stringify(state));
+        newState.predict = action.value;
         return newState;
     }
 

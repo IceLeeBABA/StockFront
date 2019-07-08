@@ -5,7 +5,8 @@ import {
     UPDATE_K_DATA,
     UPDATE_K_CODE,
     UPDATE_EXCHANGE_DATA,
-    UPDATE_SCREEN_TABLE_DATA
+    UPDATE_SCREEN_TABLE_DATA,
+    UPDATE_PREDICT
 } from './actionTypes';
 
 
@@ -40,6 +41,12 @@ export const updateExchangeAction = (value) => ({
     type: UPDATE_EXCHANGE_DATA,
     value
 });
+
+export const updatePredict = (value) => ({
+    type: UPDATE_PREDICT,
+    value
+});
+
 
 export const getTableData = (exchange, page, number) => {
     return (dispatch) => {
@@ -127,24 +134,29 @@ export const getKData = (code, begin, end) => {
                 prices.push([item.begin_price, item.end_price, item.highest_price, item.lowest_price]);
             }
 
-            // let predict = [predictionData[0].begin_price, predictionData[0].end_price,
-            //     predictionData[0].highest_price, predictionData[0].lowest_price];
-            let predict = predictionData[0];
-
             const candlestick = {
                 dates: dates,
                 prices: prices,
-                predict: predict
             };
-            const action = updateKDataAction(candlestick);
-            dispatch(action);
+
+            const action1 = updateKDataAction(candlestick);
+            dispatch(action1);
+
+            const action2 = updatePredict(predictionData);
+            dispatch(action2);
         }));
     }
 };
 
 export const getKCode = (code) => {
     return (dispatch) => {
-        const action = updateKCodeAction(code);
-        dispatch(action);
+        axios.get(BACKEND_ADDR + '/prediction', {params: {code: code}})
+            .then((resp) => {
+                let predictionData = resp.data;
+                const action1 = updateKCodeAction(code);
+                dispatch(action1);
+                const action2 = updatePredict(predictionData);
+                dispatch(action2);
+        });
     }
 };

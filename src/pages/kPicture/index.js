@@ -4,13 +4,14 @@ import { DatePicker } from 'antd';
 import moment from 'moment';
 import {getKData} from "../../store/actionCreators";
 import store from "../../store";
-
+import ReactEcharts from "echarts-for-react";
 
 const { RangePicker } = DatePicker;
 
 
 class KPicture extends Component {
     range = [moment().subtract(6, 'months'), moment()]; //default value
+
 
     constructor(props) {
         super(props);
@@ -23,12 +24,9 @@ class KPicture extends Component {
 
     handleStoreChange(){
         this.setState(store.getState());
-        this.initChart();
     }
 
-    async doTheChange(dummy, dateString) {
-        console.log("Do the change")
-
+    doTheChange(dummy, dateString) {
         let code;
 
         if (this.state === undefined || this.state.inputValue === undefined || this.state.inputValue === ''){
@@ -40,7 +38,7 @@ class KPicture extends Component {
         store.dispatch(action);
 
         try {
-            this.initChart();
+            //this.initChart(); useless code
             this.range[0] = moment(dateString[0]);
             this.range[1] = moment(dateString[1]);
         } catch (e) {
@@ -56,11 +54,7 @@ class KPicture extends Component {
         });
     }
 
-
-    initChart(){
-        const kChart = echarts.init(this.refs.candlestick_chart);
-        console.log(this.state.candlestick.dates);
-        console.log(this.state.candlestick.prices);
+    getOption(){
         let option = {
             title: {
                 text: '日K图',
@@ -79,25 +73,22 @@ class KPicture extends Component {
                 data: this.state.candlestick.prices
             }]
         };
-        kChart.setOption(option);
+        return option;
     }
 
     render() {
-        let prediction = Math.floor(this.state.candlestick.predict * 100) / 100;
-
         return (
             <div>
-                <h3>股票代码：{this.state.inputValue === undefined || this.state.inputValue === '' ? '000001' : this.state.inputValue}</h3>
+                <h3>股票代码：{this.state.inputValue}</h3>
                 <RangePicker ref="range_picker" onChange={this.doTheChange}>
                 </RangePicker>
                 <br/><br/>
 
-                <div ref="candlestick_chart" style={{width:"90%", height:"360%"}}>
-                </div>
+                <ReactEcharts option={this.getOption()} style={{width:"90%", height:"360%"}}/>
 
                 <h3>股价预测</h3>
                 <div>
-                    今日收盘价：{prediction} （元）
+                    今日收盘价：{ Math.floor(this.state.predict * 100) / 100 }（元）
                 </div>
             </div>
         );
