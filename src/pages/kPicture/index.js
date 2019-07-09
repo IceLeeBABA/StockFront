@@ -56,9 +56,6 @@ class KPicture extends Component {
 
     getOption(){
         let option = {
-            title: {
-                text: '日K图',
-            },
             tooltip: {},
             legend: {
                 data:['股票价格']
@@ -80,16 +77,18 @@ class KPicture extends Component {
         return (
             <div>
                 <h3>股票代码：{this.state.inputValue}</h3>
+                <h3>股价预测</h3>
+                <div>
+                    今日收盘价：{ Math.floor(this.state.predict * 100) / 100 }（元）
+                </div>
+
+                <br/><br/><br/>
+                <h3>日K图</h3>
                 <RangePicker ref="range_picker" onChange={this.doTheChange}>
                 </RangePicker>
                 <br/><br/>
 
                 <ReactEcharts option={this.getOption()} style={{width:"90%", height:"360%"}}/>
-
-                <h3>股价预测</h3>
-                <div>
-                    今日收盘价：{ Math.floor(this.state.predict * 100) / 100 }（元）
-                </div>
             </div>
         );
     }
